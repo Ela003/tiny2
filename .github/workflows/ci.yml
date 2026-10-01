@@ -1,4 +1,4 @@
-name: CI + Coolify
+name: CI + Coolify + Rollback
 
 on:
   push:
