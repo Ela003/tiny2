@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f2f5ef">
+    <meta name="description" content="A calm, simple place to keep track of your tasks.">
+    <title>Daymark — your tasks, in focus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Daymark home">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>daymark</span>
+        </a>
+        <p class="today-label" id="today-label"></p>
+      </header>
+
+      <main class="workspace">
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> YOUR DAILY DESK</p>
+          <h1 id="page-title">Today, <span>in focus.</span></h1>
+          <p class="intro-copy">A clear list makes room for good work.</p>
+        </section>
+
+        <section class="task-area" aria-label="Your tasks">
+          <div class="progress-strip">
+            <div class="progress-copy">
+              <span class="progress-label">DAILY PROGRESS</span>
+              <p><strong id="completed-count">0</strong> of <span id="total-count">0</span> tasks complete</p>
+            </div>
+            <div class="progress-meter" role="progressbar" aria-label="Tasks completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <span id="progress-fill"></span>
+            </div>
+            <span class="progress-percent" id="progress-percent">0%</span>
+          </div>
+
+          <form class="task-form" id="task-form">
+            <label class="sr-only" for="task-input">Add a task</label>
+            <span class="input-mark" aria-hidden="true">+</span>
+            <input id="task-input" name="title" type="text" maxlength="200" placeholder="What needs your attention?" autocomplete="off" required>
+            <button class="add-button" type="submit"><span aria-hidden="true">+</span> Add task</button>
+          </form>
+
+          <div class="list-toolbar">
+            <h2>Your list <span id="visible-count">0</span></h2>
+            <div class="filters" role="group" aria-label="Filter tasks">
+              <button class="filter-button is-active" type="button" data-filter="all" aria-pressed="true">All</button>
+              <button class="filter-button" type="button" data-filter="active" aria-pressed="false">To do</button>
+              <button class="filter-button" type="button" data-filter="completed" aria-pressed="false">Done</button>
+            </div>
+          </div>
+
+          <ul class="task-list" id="task-list" aria-live="polite" aria-busy="true"></ul>
+          <div class="empty-state" id="empty-state" hidden>
+            <span class="empty-symbol" aria-hidden="true">✳</span>
+            <p class="empty-title">Nothing on the list yet.</p>
+            <p class="empty-copy">Add a task above and give your day a starting point.</p>
+          </div>
+          <p class="status-message" id="status-message" role="status" aria-live="polite"></p>
+        </section>
+
+        <footer class="page-footer">
+          <span>One thing at a time.</span>
+          <span class="footer-rule" aria-hidden="true"></span>
+          <span>You're doing fine.</span>
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>
