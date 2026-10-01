@@ -1,0 +1,85 @@
+name: CI + Coolify
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+    inputs:
+      rollback_commit:
+        description: "Commit to rollback to"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+
+  test:
+    name: Run CI Test
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run test
+        run: node test.js
+
+      - name: CI Success
+        run: echo "CI passed successfully"
+
+
+  coolify:
+    name: Deploy to Coolify
+    runs-on: ubuntu-latest
+
+    needs: test
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+
+      - name: Deploy to Coolify
+        run: |
+          curl --fail-with-body \
+            --request POST \
+            "${{ secrets.COOLIFY_DEPLOY_WEBHOOK }}" \
+            --header "Authorization: Bearer ${{ secrets.COOLIFY_TOKEN }}"
+
+  rollback:
+    name: Rollback Coolify
+    runs-on: ubuntu-latest
+
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+
+      - name: Rollback application
+        env:
+          COOLIFY_API_URL: ${{ secrets.COOLIFY_API_URL }}
+          COOLIFY_APP_UUID: ${{ secrets.COOLIFY_APP_UUID }}
+          COOLIFY_ROLLBACK_TOKEN: ${{ secrets.COOLIFY_ROLLBACK_TOKEN }}
+          ROLLBACK_COMMIT: ${{ inputs.rollback_commit }}
+
+        run: |
+          curl --fail-with-body \
+            --request POST \
+            "${COOLIFY_API_URL}/api/v1/applications/${COOLIFY_APP_UUID}/rollback" \
+            --header "Authorization: Bearer ${COOLIFY_ROLLBACK_TOKEN}" \
+            --header "Content-Type: application/json" \
+            --data "{\"commit\":\"${ROLLBACK_COMMIT}\"}"        
+
+    
